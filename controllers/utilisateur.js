@@ -167,15 +167,33 @@ exports.authentification = async (req, res) => {
             codeValidation.code = code.RandoomCode();
             const codeSave = await codeValidation.save();
             console.log(codeSave);
+            let data = JSON.stringify({ "outboundSMSMessageRequest": {
+                 "address": "tel:+"+telephone.trim(), 
+                 "senderAddress": "tel:+221772488807",
+                 "outboundSMSTextMessage": { 
+                    "message": "Votre code de validation Magui-Med est le suivant : "+codeSave.code }
+                 }
+                 });
+                  let config = {
+                    method: 'post', maxBodyLength: Infinity,
+                    url: 'https://api.orange.com/smsmessaging/v1/outbound/tel:+221772488807/requests', 
+                    headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer '+req.accessToken }, 
+                    data : data 
+                }; 
+                axios.request(config) .then((response) => { 
+                    console.log(JSON.stringify(response.data)); 
+                    return res.status(200).json({
+                        message: 'Connexion reussie',
+                        data: {
+                            user: userSave,
+                            token: userSave.token
+                        },
+                    });
+                }) .catch((error) => { 
+                    console.log(error);
+                 });
 
-
-            return res.status(200).json({
-                message: 'Connexion reussie',
-                data: {
-                    user: userSave,
-                    token: userSave.token
-                },
-            });
+           
 
         }
         else {

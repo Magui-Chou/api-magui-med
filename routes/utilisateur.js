@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 
 const userCtrl = require('../controllers/utilisateur');
-//const authMiddle = require('../middlewares/access.js');
+const orangeSmsMiddle = require('../middlewares/orangeSms.js');
 
 
 router.post('/', userCtrl.add);
@@ -12,7 +12,7 @@ router.post('/', userCtrl.add);
 // router.put('/:id', userCtrl.update);
 // router.delete('/:id', userCtrl.delete);
 
- router.post('/authentification',userCtrl.authentification);
+ router.post('/authentification',orangeSmsMiddle,userCtrl.authentification);
 
 
 module.exports = router;
